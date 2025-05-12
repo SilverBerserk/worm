@@ -1,11 +1,12 @@
-const rows = 10;
-const cols = 10;
-let wormLength = 2;
-let field = Array.from({ length: rows }, () =>
-    Array.from({ length: cols }, () => 0)
-);
+const ROWS = 10;
+const COLS = 10;
 
+let wormLength = 2;
 let wormHead = [8, 4]
+
+let field = Array.from({ length: ROWS }, () =>
+    Array.from({ length: COLS }, () => 0)
+);
 
 field[8][4] = 2
 field[9][4] = 1
@@ -29,25 +30,28 @@ const getNextPosition = ([rowIdx, colIdx]) => {
 
 
 const addApple = (field) => {
-    console.log('addApple')
-    const row = Math.floor(Math.random() * rows)
-    const col = Math.floor(Math.random() * cols)
+    console.log('score:' + (wormLength - 2))
+    const row = Math.floor(Math.random() * ROWS)
+    const col = Math.floor(Math.random() * COLS)
 
     if (field[row][col] === 0)
         field[row][col] = -1
     else addApple(field)
 }
 
-const moveWorm = () => {
-    console.log('move', direction, wormLength)
-    const [nextRow, nextCol] = getNextPosition(wormHead)
-    console.log({ nextRow, nextCol })
-    if (nextRow < 0 || nextRow >= rows || nextCol < 0 || nextCol >= cols || field[nextRow][nextCol]>0)
-    {    
+const checkDeath = (row, col) => {
+    if (row < 0 || row >= ROWS || col < 0 || col >= COLS || field[row][col] > 0) {
         gameOver = true
         renderField()
-        return
+        return true
     }
+}
+
+const moveWorm = () => {
+    const [nextRow, nextCol] = getNextPosition(wormHead)
+    if (checkDeath(nextRow, nextCol))
+        return
+
     const copyField = JSON.parse(JSON.stringify(field))
     if (field[nextRow][nextCol] === -1) {
         wormLength++
@@ -66,19 +70,28 @@ const moveWorm = () => {
     renderField()
 }
 
-const renderField = () => {
+const createField = () => {
     const documentBody = document.querySelector("body")
-    document.querySelector('.field')?.remove()
-
     const fieldDiv = document.createElement('div')
     fieldDiv.classList.add('field')
-
-    field.forEach(row => {
-        row.forEach(value => {
+    field.forEach((row, rowIdx) => {
+        row.forEach((_, colIdx) => {
             const tile = document.createElement("div")
             tile.classList.add('tile')
+            tile.id = `${rowIdx}-${colIdx}`
+            fieldDiv.appendChild(tile)
+        })
+    })
+    documentBody.appendChild(fieldDiv)
+}
 
-       
+const renderField = () => {
+    field.forEach((row, rowIdx) => {
+        row.forEach((value, colIdx) => {
+
+            const tile = document.getElementById(`${rowIdx}-${colIdx}`)
+            if (value === 0)
+                tile.classList.remove('head', 'tail', 'apple')
 
             if (value == wormLength)
                 tile.classList.add('head')
@@ -89,18 +102,15 @@ const renderField = () => {
             if (value === -1)
                 tile.classList.add('apple')
 
-            if(gameOver && value > 0)
+            if (gameOver && value > 0)
                 tile.classList.add('apple')
 
-            fieldDiv.appendChild(tile)
         })
     })
-
-    documentBody.appendChild(fieldDiv)
-    // documentBody.replaceChild(documentBody.querySelector('.field'),fieldDiv)
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    createField()
     addApple(field)
     setInterval(() => {
         !gameOver && moveWorm()
@@ -110,16 +120,20 @@ document.addEventListener('DOMContentLoaded', () => {
 const switchDirection = (e) => {
     switch (e.code) {
         case 'KeyW':
-            direction = 'Up'
+            if (direction !== 'Down')
+                direction = 'Up'
             break;
         case 'KeyS':
-            direction = 'Down'
+            if (direction !== 'Up')
+                direction = 'Down'
             break;
         case 'KeyA':
-            direction = 'Left'
+            if (direction !== 'Right')
+                direction = 'Left'
             break;
         case 'KeyD':
-            direction = 'Right'
+            if (direction !== 'Left')
+                direction = 'Right'
             break;
     }
 }
