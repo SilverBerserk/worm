@@ -1,0 +1,26 @@
+.field {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    width: 210px;
+}
+
+.tile {
+    width: 20px;
+    height: 20px;
+    border:1px solid white;
+    border-top: none;
+    border-left: none;
+    background-color: lightgrey;
+}
+
+.head {
+    background-color: greenyellow;
+}
+
+.tail {
+    background-color: green;
+}
+
+.apple {
+    background-color: red;
+}
