@@ -19,6 +19,12 @@ body {
     background-color: lightgrey;
 }
 
+#game-over {
+    position: absolute;
+    font-size: 56px;
+    z-index: 10;
+}
+
 .restart-button {
     background-color: #008CBA;
     color: #FFF;

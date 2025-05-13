@@ -1,5 +1,5 @@
-const ROWS = 6;
-const COLS = 6;
+const ROWS = 10;
+const COLS = 10;
 
 const SQUARE_SIDE = 40;
 
@@ -21,6 +21,7 @@ const startGame = () => {
     button?.remove()
     initializeField()
     gameOver = false
+    document.getElementById('game-over').style.display = 'none'
     prevDirection = UP
     wormLength = 2;
     wormHead = [ROWS - 2, Math.floor(COLS / 2 - 1)]
@@ -59,7 +60,6 @@ const getNextPosition = ([rowIdx, colIdx], direction) => {
     }
 }
 
-
 const addApple = (field) => {
     document.querySelector('#score').innerHTML = 'score:' + (wormLength - 2)
     const row = Math.floor(Math.random() * ROWS)
@@ -71,8 +71,9 @@ const addApple = (field) => {
 }
 
 const checkDeath = (row, col) => {
-    if (row < 0 || row >= ROWS || col < 0 || col >= COLS || field[row][col] > 0) {
+    if (row < 0 || row >= ROWS || col < 0 || col >= COLS || field[row][col] > 1) {
         gameOver = true
+        document.getElementById('game-over').style.display = 'block'
         document.removeEventListener('keypress', switchDirection)
         clearInterval(timeInterval)
         renderField()
