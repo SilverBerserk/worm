@@ -1,5 +1,5 @@
-const ROWS = 10;
-const COLS = 10;
+const ROWS = 6;
+const COLS = 6;
 
 const SQUARE_SIDE = 40;
 
@@ -8,20 +8,36 @@ const DOWN = 'DOWN'
 const LEFT = 'LEFT'
 const RIGHT = 'RIGHT'
 
-let wormLength = 2;
-let wormHead = [8, 4]
+let wormLength,
+    wormHead,
+    field,
+    prevDirection,
+    timeInterval,
+    gameOver
 
-let field = Array.from({ length: ROWS }, () => Array.from({ length: COLS }, () => 0));
+const startGame = () => {
+    document.addEventListener("keypress", switchDirection);
+    const button = document.querySelector('.restart-button')
+    button?.remove()
+    initializeField()
+    gameOver = false
+    prevDirection = UP
+    wormLength = 2;
+    wormHead = [ROWS - 2, Math.floor(COLS / 2 - 1)]
+    addApple(field)
+    tick()
+}
 
-field[8][4] = 2
-field[9][4] = 1
+const restartButton = document.createElement('button')
+restartButton.innerText = 'Restart'
+restartButton.className = 'restart-button'
+restartButton.onclick = startGame
 
-
-let prevDirection = UP
-
-let gameOver = false
-
-let timeInterval
+const initializeField = () => {
+    field = Array.from({ length: ROWS }, () => Array.from({ length: COLS }, () => 0));
+    field[ROWS - 1][Math.floor(COLS / 2 - 1)] = 2
+    field[ROWS - 1][Math.floor(COLS / 2 - 1)] = 1
+}
 
 const tick = () => {
     timeInterval && clearInterval(timeInterval)
@@ -60,6 +76,7 @@ const checkDeath = (row, col) => {
         document.removeEventListener('keypress', switchDirection)
         clearInterval(timeInterval)
         renderField()
+        document.querySelector('body').appendChild(restartButton)
         return true
     }
 }
@@ -72,7 +89,8 @@ const moveWorm = (direction) => {
     const copyField = JSON.parse(JSON.stringify(field))
     if (field[nextRow][nextCol] === -1) {
         wormLength++
-        addApple(copyField)
+        if (wormLength < ROWS * COLS)
+            addApple(copyField)
     }
     else field.forEach((row, rowIdx) => {
         row.forEach((value, colIdx) => {
@@ -157,40 +175,30 @@ const renderField = () => {
     })
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    createField()
-    addApple(field)
-    tick()
-});
 
 const switchDirection = (e) => {
-    switch (e.code) {
-        case 'KeyW':
-            if (![DOWN, UP].includes(prevDirection)) {
-                moveWorm(UP)
-                tick()
-            }
-            break;
-        case 'KeyS':
-            if (![DOWN, UP].includes(prevDirection)) {
-                moveWorm(DOWN)
-                tick()
-            }
-            break;
-        case 'KeyA':
-            if (![LEFT, RIGHT].includes(prevDirection)) {
-                moveWorm(LEFT)
-                tick()
-            }
-            break;
-        case 'KeyD':
-            if (![LEFT, RIGHT].includes(prevDirection)) {
-                moveWorm(RIGHT)
-                tick()
-            }
-            break;
+    if (![DOWN, UP].includes(prevDirection) && e.code === 'KeyW') {
+        moveWorm(UP)
+        tick()
+    }
+    if (![DOWN, UP].includes(prevDirection) && e.code === 'KeyS') {
+        moveWorm(DOWN)
+        tick()
+    }
+    if (![LEFT, RIGHT].includes(prevDirection) && e.code === 'KeyA') {
+        moveWorm(LEFT)
+        tick()
+    }
+    if (![LEFT, RIGHT].includes(prevDirection) && e.code === 'KeyD') {
+        moveWorm(RIGHT)
+        tick()
     }
 }
 
-document.addEventListener("keypress", switchDirection);
 
+document.addEventListener('DOMContentLoaded', () => {
+    // initializeField()
+    startGame()
+    createField()
+
+});

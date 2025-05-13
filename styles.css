@@ -9,28 +9,40 @@ body {
 .field {
     display: flex;
     flex-wrap: wrap;
+    gap: 1px;
 }
 
 .tile {
     display: flex;
     justify-content: center;
     align-items: center;
-    border:1px solid white;
-    border-top: none;
-    border-left: none;
     background-color: lightgrey;
 }
 
+.restart-button {
+    background-color: #008CBA;
+    color: #FFF;
+    border-radius: 5px;
+    border: none;
+    padding: 10px 5px;
+    margin-top: 5px;
+}
 
-.up{
+.restart-button:hover {
+    cursor: pointer;
+    background-color: #097092;
+}
+
+.up {
     transform: rotate(90deg);
 }
+
 .down {
     transform: rotate(90deg);
 }
 
 .head {
-    background-color: rgb(219, 235, 195);
+    background-color: rgb(194, 247, 194);
     transform: rotate(0);
 }
 
@@ -41,4 +53,3 @@ body {
 .apple {
     background-color: rgb(243, 177, 177);
 }
-
