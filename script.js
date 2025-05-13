@@ -1,7 +1,7 @@
 const ROWS = 10;
 const COLS = 10;
 
-const SQUARE_SIDE = 20;
+const SQUARE_SIDE = 40;
 
 const UP = 'UP'
 const DOWN = 'DOWN'
@@ -45,7 +45,6 @@ const getNextPosition = ([rowIdx, colIdx], direction) => {
 
 
 const addApple = (field) => {
-    console.log('score:' + (wormLength - 2))
     document.querySelector('#score').innerHTML = 'score:' + (wormLength - 2)
     const row = Math.floor(Math.random() * ROWS)
     const col = Math.floor(Math.random() * COLS)
@@ -58,6 +57,7 @@ const addApple = (field) => {
 const checkDeath = (row, col) => {
     if (row < 0 || row >= ROWS || col < 0 || col >= COLS || field[row][col] > 0) {
         gameOver = true
+        document.removeEventListener('keypress', switchDirection)
         clearInterval(timeInterval)
         renderField()
         return true
@@ -121,11 +121,11 @@ const renderField = () => {
                 tile.classList.add('head')
                 tile.classList.add(prevDirection.toLocaleLowerCase())
                 const [nextRowIdx, nextColIdx] = getNextPosition([rowIdx, colIdx], prevDirection)
-                console.log(nextRowIdx,nextColIdx,field[nextRowIdx, nextColIdx])
+                tile.innerHTML = "😀"
+                if (nextRowIdx < 0 || nextRowIdx >= ROWS || nextColIdx < 0 || nextColIdx >= COLS)
+                    return
                 if (field[nextRowIdx][nextColIdx] === -1)
                     tile.innerHTML = "😛"
-                else
-                    tile.innerHTML = "😀"
             }
 
             if (value == wormLength - 1) {
@@ -166,24 +166,30 @@ document.addEventListener('DOMContentLoaded', () => {
 const switchDirection = (e) => {
     switch (e.code) {
         case 'KeyW':
-            if (![DOWN, UP].includes(prevDirection))
+            if (![DOWN, UP].includes(prevDirection)) {
                 moveWorm(UP)
+                tick()
+            }
             break;
         case 'KeyS':
-            if (![DOWN, UP].includes(prevDirection))
+            if (![DOWN, UP].includes(prevDirection)) {
                 moveWorm(DOWN)
+                tick()
+            }
             break;
         case 'KeyA':
-            if (![LEFT, RIGHT].includes(prevDirection))
+            if (![LEFT, RIGHT].includes(prevDirection)) {
                 moveWorm(LEFT)
+                tick()
+            }
             break;
         case 'KeyD':
-            if (![LEFT, RIGHT].includes(prevDirection))
+            if (![LEFT, RIGHT].includes(prevDirection)) {
                 moveWorm(RIGHT)
+                tick()
+            }
             break;
     }
-
-    tick()
 }
 
 document.addEventListener("keypress", switchDirection);
