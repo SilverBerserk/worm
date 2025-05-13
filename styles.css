@@ -18,14 +18,24 @@ body {
     background-color: lightgrey;
 }
 
+
+.up{
+    transform: rotate(90deg);
+}
+.down {
+    transform: rotate(90deg);
+}
+
 .head {
-    background-color: greenyellow;
+    background-color: rgb(219, 235, 195);
+    transform: rotate(0);
 }
 
 .tail {
-    background-color: green;
+    background-color: rgb(194, 247, 194);
 }
 
 .apple {
-    background-color: red;
+    background-color: rgb(243, 177, 177);
 }
+
