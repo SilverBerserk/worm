@@ -1,12 +1,17 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 90vh;
+    flex-direction: column;
+}
+
 .field {
-    display: grid;
-    grid-template-columns: repeat(10, 1fr);
-    width: 210px;
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .tile {
-    width: 20px;
-    height: 20px;
     border:1px solid white;
     border-top: none;
     border-left: none;
